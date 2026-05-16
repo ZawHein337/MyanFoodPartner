@@ -26,6 +26,8 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We use your location to assign nearby orders and improve delivery accuracy.</string>
 	<key>NSBluetoothAlwaysUsageDescription</key>
 	<string>Need BLE permission for getting printers</string>
 	<key>NSBluetoothPeripheralUsageDescription</key>
