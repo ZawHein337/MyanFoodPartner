@@ -13,19 +13,10 @@ import 'package:get/get.dart';
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
 
-  final int crossAxisCount = 4;
-  final double itemHeight = 110.0;
-  final double mainSpacing = Dimensions.paddingSizeSmall;
-
-  Widget _buildGridItem({required int index, required List<MenuModel> menuList}) {
-    return Container(
-      height: itemHeight,
-      alignment: Alignment.center,
-      child: MenuButtonWidget(menu: menuList[index], isProfile: index == 0, isLogout: index == menuList.length-1),
-    );
-  }
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final int crossAxisCount = screenWidth < 600 ? 4 : (screenWidth < 900 ? 6 : 8);
 
     Restaurant? restaurant = Get.find<ProfileController>().profileModel != null ? Get.find<ProfileController>().profileModel!.restaurants![0] : null;
 
@@ -118,81 +109,48 @@ class MenuScreen extends StatelessWidget {
 
     menuList.add(MenuModel(icon: Images.logOut, title: 'logout'.tr, route: ''));
 
-    final int fullRowsCount = menuList.length ~/ crossAxisCount; // 10 ~/ 4 = 2
-    final int remainder = menuList.length % crossAxisCount; // 10 % 4 = 2
-
-    final List<Widget> fullRowsItems = List.generate(
-        fullRowsCount * crossAxisCount, (index) => _buildGridItem(index: index, menuList: menuList)
-    );
-
-    final List<Widget> remainderItems = List.generate(
-        remainder, (index) => _buildGridItem(index: fullRowsCount * crossAxisCount + index, menuList: menuList)
-    );
-
-    // Calculate spacing based on the GridView's settings
-    final double crossAxisSpacing = mainSpacing;
-    final double mainAxisSpacing = mainSpacing;
-    final double childAspectRatio = (MediaQuery.of(context).size.width - 2 * mainSpacing - (crossAxisCount - 1) * crossAxisSpacing) / (crossAxisCount * itemHeight);
-
-
-    return Container(
-      padding: const EdgeInsets.only(
-        left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault,
-        bottom: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeExtraSmall,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(Dimensions.radiusExtraLarge)),
-        color: Theme.of(context).cardColor,
-      ),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-
-        Container(
-          height: 5, width: 50,
-          margin: const EdgeInsets.only(top: 10),
-          decoration: BoxDecoration(
-            color: Theme.of(context).hintColor,
-            borderRadius: BorderRadius.circular(10),
-          ),
+    return  Container(
+      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.8),
+      width: double.infinity,
+        padding: const EdgeInsets.only(
+          left: Dimensions.paddingSizeDefault, right: Dimensions.paddingSizeDefault,
+          bottom: Dimensions.paddingSizeDefault, top: Dimensions.paddingSizeExtraSmall,
         ),
-        const SizedBox(height: Dimensions.paddingSizeLarge),
-
-        GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            childAspectRatio: childAspectRatio,//(1/1.27),
-            // mainAxisExtent: itemHeight,
-            crossAxisSpacing: Dimensions.paddingSizeExtraSmall,
-            mainAxisSpacing: mainAxisSpacing,
-          ),
-          itemCount: fullRowsItems.length, //menuList.length,
-          itemBuilder: (context, index) {
-            return MenuButtonWidget(menu: menuList[index], isProfile: index == 0, isLogout: index == menuList.length-1);
-          },
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(Dimensions.radiusExtraLarge)),
+          color: Theme.of(context).cardColor,
         ),
-
-        if (remainder > 0) ...[
-          SizedBox(height: mainAxisSpacing),
-
-          SizedBox(
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: remainderItems.map((item) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: crossAxisSpacing / 2),
-                  child: SizedBox(
-                    width: itemHeight * childAspectRatio,
-                    child: item,
-                  ),
-                );
-              }).toList(),
+        child: SingleChildScrollView(
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+          
+            Container(
+              height: 5, width: 50,
+              margin: const EdgeInsets.only(top: 10),
+              decoration: BoxDecoration(
+                color: Theme.of(context).hintColor,
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: Dimensions.paddingSizeLarge),
 
-      ]),
-    );
+            LayoutBuilder(
+              builder: (context, constants) {
+                final double width = constants.maxWidth;
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: Dimensions.paddingSizeDefault,
+                  children: List.generate(menuList.length, (index) {
+                    return SizedBox(
+                      width: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount,
+                      child: MenuButtonWidget(menu: menuList[index], isProfile: index == 0, isLogout: index == menuList.length-1, height: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount),
+                    );
+                  }),
+                );
+              },
+            ),
+
+          ]),
+        ),
+      );
   }
 }
