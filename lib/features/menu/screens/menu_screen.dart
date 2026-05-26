@@ -142,7 +142,11 @@ class MenuScreen extends StatelessWidget {
                   children: List.generate(menuList.length, (index) {
                     return SizedBox(
                       width: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount,
-                      child: MenuButtonWidget(menu: menuList[index], isProfile: index == 0, isLogout: index == menuList.length-1, height: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount),
+                      child: MenuButtonWidget(
+  menu: menuList[index],
+  isProfile: index == 0,
+  isLogout: index == menuList.length - 1,
+),
                     );
                   }),
                 );
