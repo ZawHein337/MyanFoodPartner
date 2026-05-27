@@ -12,10 +12,11 @@ import 'package:get/get.dart';
 
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
-  final int crossAxisCount = 4;
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final int crossAxisCount = screenWidth < 600 ? 4 : (screenWidth < 900 ? 6 : 8);
 
     Restaurant? restaurant = Get.find<ProfileController>().profileModel != null ? Get.find<ProfileController>().profileModel!.restaurants![0] : null;
 
@@ -138,7 +139,7 @@ class MenuScreen extends StatelessWidget {
                 return Wrap(
                   alignment: WrapAlignment.center,
                   spacing: Dimensions.paddingSizeDefault,
-                  children: List.generate(18, (index) {
+                  children: List.generate(menuList.length, (index) {
                     return SizedBox(
                       width: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount,
                       child: MenuButtonWidget(menu: menuList[index], isProfile: index == 0, isLogout: index == menuList.length-1, height: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount),
