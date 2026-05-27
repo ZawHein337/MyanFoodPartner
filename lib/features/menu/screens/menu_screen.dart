@@ -140,11 +140,15 @@ class MenuScreen extends StatelessWidget {
                   alignment: WrapAlignment.center,
                   spacing: Dimensions.paddingSizeDefault,
                   children: List.generate(menuList.length, (index) {
-                    return SizedBox(
-                      width: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount,
-                      child: MenuButtonWidget(menu: menuList[index], isProfile: index == 0, isLogout: index == menuList.length-1, height: (width - Dimensions.paddingSizeDefault * crossAxisCount - 1) / crossAxisCount),
-                    );
-                  }),
+  return SizedBox(
+    width: 110, // or 120 for iPad
+    child: MenuButtonWidget(
+      menu: menuList[index],
+      isProfile: index == 0,
+      isLogout: index == menuList.length - 1,
+    ),
+  );
+}),
                 );
               },
             ),
